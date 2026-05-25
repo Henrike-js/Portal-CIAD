@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CIAD | Portal de Acesso</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Source+Sans+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #2f5dff;
+      --primary-light: #e6ecff;
+      --primary-dark: #1a3fd4;
+      --bg: #f5f7fb;
+      --text: #111827;
+      --text-muted: #6b7280;
+      --card-bg: #ffffff;
+      --border-soft: #e5e7eb;
+      --radius: 18px;
+      --shadow-soft: 0 10px 25px rgba(15, 23, 42, 0.08);
+      --shadow-hover: 0 20px 50px rgba(15, 23, 42, 0.18);
+    }
+
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Source Sans Pro", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== TOPBAR ===== */
+    .topbar {
+      width: 100%;
+      background: #ffffff;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .logo-wrapper { display: flex; align-items: center; }
+    .logo-sisp-img { height: 70px; width: auto; display: block; }
+
+    /* Logo placeholder (texto) para quando não há imagem */
+    .logo-text {
+      font-family: "Montserrat", sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+    }
+
+    .clock-wrapper { text-align: right; font-size: 14px; }
+    .clock-time { font-weight: 700; font-size: 20px; }
+    .clock-date { color: var(--text-muted); margin-top: 2px; }
+
+    /* ===== MAIN ===== */
+    .main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .main-inner {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+
+    /* Cabeçalho */
+    .page-header {
+      text-align: center;
+    }
+
+    .page-header h1 {
+      font-family: "Montserrat", sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    /* ===== PORTAL CARDS ===== */
+    .portals-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      width: 100%;
+    }
+
+    .portal-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 48px 32px;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      text-decoration: none;
+      color: var(--text);
+      box-shadow: var(--shadow-soft);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .portal-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--primary-light) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.22s ease;
+      border-radius: var(--radius);
+    }
+
+    .portal-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary);
+    }
+
+    .portal-card:hover::before {
+      opacity: 1;
+    }
+
+    .portal-card--atendimento .portal-icon-bg {
+      background: #e6ecff;
+      color: #2f5dff;
+    }
+
+    .portal-card--despacho .portal-icon-bg {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .portal-card--despacho:hover {
+      border-color: #f59e0b;
+    }
+
+    .portal-card--despacho::before {
+      background: linear-gradient(135deg, #fef9ee 0%, transparent 60%);
+    }
+
+    .portal-icon-bg {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.22s ease;
+    }
+
+    .portal-card:hover .portal-icon-bg {
+      transform: scale(1.08);
+    }
+
+    .portal-card-body {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .portal-card-body h2 {
+      font-family: "Montserrat", sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .portal-card-body p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .portal-arrow {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      font-size: 18px;
+      opacity: 0.3;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .portal-card:hover .portal-arrow {
+      opacity: 0.7;
+      transform: translate(2px, -2px);
+    }
+
+    /* Divisor central */
+    .portal-divider {
+      display: none;
+    }
+
+    /* Badge de status */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: #dcfce7;
+      color: #15803d;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Animação de entrada */
+    .portal-card {
+      animation: fadeInUp 0.4s ease both;
+    }
+
+    .portal-card:nth-child(1) { animation-delay: 0.05s; }
+    .portal-card:nth-child(2) { animation-delay: 0.15s; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header {
+      animation: fadeInUp 0.35s ease both;
+    }
+
+    /* ===== RODAPÉ ===== */
+    .footer {
+      width: 100%;
+      text-align: center;
+      padding: 14px 0;
+      font-size: 13px;
+      color: var(--text-muted);
+      background: #ffffff;
+      margin-top: auto;
+    }
+
+    /* ===== RESPONSIVO ===== */
+    @media (max-width: 620px) {
+      .portals-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-inner {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .clock-wrapper { text-align: left; }
+
+      .portal-card { padding: 36px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="logo-wrapper">
+         <img src="sisp-logo.png" alt="Logo SISP" class="logo-sisp-img">
+      </div>
+      <div class="clock-wrapper">
+        <div class="clock-time" id="clock-time">00:00:00</div>
+        <div class="clock-date" id="clock-date">---</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="main">
+    <div class="main-inner">
+
+      <section class="page-header">
+        <h1>CIAD | Portal de Acesso</h1>
+        <p>Selecione o portal desejado para acessar o sistema.</p>
+      </section>
+
+      <div class="portals-grid">
+
+        <!-- Portal Atendimento -->
+        <a href="atendimento/inicio.html" class="portal-card portal-card--atendimento">
+          <span class="portal-arrow">↗</span>
+          <div class="portal-icon-bg">🎧</div>
+          <div class="portal-card-body">
+            <h2>Portal Atendimento</h2>
+            <p>Acesso ao sistema de atendimento a ocorrências e chamadas</p>
+            <div class="status-badge">
+              <span class="status-dot"></span> Online
+            </div>
+          </div>
+        </a>
+
+        <!-- Portal Despacho -->
+        <a href="despacho/index.html" class="portal-card portal-card--despacho">
+          <span class="portal-arrow">↗</span>
+          <div class="portal-icon-bg">📡</div>
+          <div class="portal-card-body">
+            <h2>Portal Despacho</h2>
+            <p>Acesso ao sistema de despacho e coordenação de viaturas</p>
+            <div class="status-badge">
+              <span class="status-dot"></span> Online
+            </div>
+          </div>
+        </a>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- RODAPÉ -->
+  <footer class="footer">
+    © 2026 SISP MG. Todos os direitos reservados.
+  </footer>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('clock-time').textContent = `${h}:${m}:${s}`;
+
+      const days = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+      const months = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+      const day = days[now.getDay()];
+      const date = `${day}, ${now.getDate()} ${months[now.getMonth()]}. ${now.getFullYear()}`;
+      document.getElementById('clock-date').textContent = date;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+
+</body>
+</html>
