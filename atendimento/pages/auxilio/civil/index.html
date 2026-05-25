@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Ocorrências - 197</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="page">
+ <header class="topbar">
+    <div class="topbar-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      
+      <div class="logo-wrapper">
+        <a href="../../../POPMENU.html" style="text-decoration: none; display: flex; align-items: center;">
+          <img src="../../../img/sisp-logo.png" alt="Sistema de Ocorrências" class="logo-sisp-img" style="height: 44px; width: auto; margin-right: 15px;">
+          <h2 style="font-family: Montserrat; font-weight:700; color: #1e293b; margin: 0;">
+            POLÍCIA CIVIL 197
+          </h2>
+        </a>
+      </div>
+
+      <div style="display: flex; gap: 15px; align-items: center;">
+        <!--
+        <a href="../../../poppm//pages/policia/index.html" style="background-color: #2f5dff; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; display: flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+           PMMG (190)
+        </a>-->
+        <a href="../bombeiros/index.html" style="background-color: #dc2626; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; display: flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+           Bombeiros (193)
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="main-inner">
+
+      <div class="roteiro-container ativo" style="display: flex; gap: 25px;">
+        
+        <div class="roteiro-content" style="flex: 1; display: flex; flex-direction: column; min-height: 60vh; background: white; padding: 25px; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+          
+          <div id="stepMenu" style="margin-bottom: 25px;">
+            <h3 style="margin-bottom: 15px; color: #1e293b; font-family: 'Montserrat', sans-serif;">
+              Selecione a natureza da ocorrência:
+            </h3>
+            
+            <div style="margin-bottom: 25px;">
+              <input type="text" id="inputBuscaNatureza" placeholder="🔍 Digite para buscar (Ex: Homicídio, Furto...)" autocomplete="off" style="width: 100%; padding: 14px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 1.05rem; background-color: #f8fafc; font-family: 'Source Sans Pro', sans-serif; outline: none; transition: border-color 0.2s;">
+            </div>
+
+            <div class="cards-grid" id="menuGrid">
+              </div>
+          </div>
+
+          <div id="stepRoteiro" style="display: none; width: 100%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
+              <h2 id="tituloRoteiro" style="color: #1e293b; margin: 0; font-size: 1.5rem;"></h2>
+              <button class="btn-step btn-back" onclick="resetarSistema()" style="background-color: #f1f5f9; color: #ef4444; border: 1px solid #fca5a5; padding: 8px 15px;">
+                ✖ Encerrar Chamada
+              </button>
+            </div>
+            
+            <p id="descricaoRoteiro" style="color: #64748b; font-style: italic; margin-bottom: 20px; font-size: 0.95rem;"></p>
+            
+            <div id="conteudoDinamico">
+              </div>
+          </div>
+
+        </div>
+
+        <div class="roteiro-notepad" style="flex: 0 0 400px; display: flex; flex-direction: column; background: white; border-radius: 8px; border: 1px solid #e5e7eb; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+          <div class="notepad-header" style="padding: 15px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+            <h3 style="margin: 0; font-family: Montserrat; color: #1e293b;">📝 Histórico 197</h3>
+            <button id="btnCopiarNotas" class="btn-copiar" style="background: white; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 600; color: #475569;">📋 Copiar</button>
+          </div>
+          <textarea id="blocoNotas" placeholder="As respostas registadas aparecerão aqui..." style="flex: 1; min-height: 500px; padding: 15px; border: none; font-size: 1rem; color: #334155; font-family: 'Source Sans Pro', sans-serif; resize: none; line-height: 1.5; outline: none;"></textarea>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    © 2026 - Polícia Civil 197
+  </footer>
+</div>
+
+<script src="roteiros197.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

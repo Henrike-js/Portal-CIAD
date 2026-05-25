@@ -1,0 +1,410 @@
+  <!-- Conteúdo da Seção de Triagem (Árvore de Decisão) -->
+                <div id="triagem" class="dynamic-content">
+                    <div id="question-container">
+                        <h3 id="question">Triagem de emergência 193</h3>
+                        <div id="guidance">
+                            <!-- O conteúdo da orientação é preenchido via JavaScript -->
+                        </div>
+                    </div>
+                    <div id="options" class="d-flex flex-wrap justify-content-center">
+                        <!-- Opções de resposta são preenchidas via JavaScript -->
+                    </div>
+                    <textarea id="notes-area" class="form-control" placeholder="Anotações da chamada (ex: SIT: Fogo na cozinha. VIT: 1 vítima consciente. REF: Prédio azul. TAC: 5 min.)..."></textarea>
+                </div>
+ // Objeto Global para Armazenar Dados da Aplicação
+        // appData contém o histórico da navegação, o caminho de decisão e a árvore de dados.
+        const appData = {
+            history: [], // Armazena os IDs dos nós visitados para navegação de volta
+            pathHistory: [], // Armazena perguntas e respostas para o resumo final
+            currentSection: 'triagem', // Seção ativa do menu lateral
+            
+            // Base de dados dos municípios por grupo SAMU para consulta
+            gruposSamu: {
+                "SAMU-BH": ["Belo Horizonte", "Belo Vale", "Caeté", "Confins", "Itabirito", "Jaboticatubas", "Lagoa Santa", "Mariana", "Matozinhos", "Moeda", "Nova Lima", "Nova União", "Ouro Preto", "Pedro Leopoldo", "Raposos", "Ribeirão das Neves", "Rio Acima", "Sabará", "Santa Luzia", "Santana do Riacho", "São José da Lapa", "Taquaraçu de Minas", "Vespasiano"],
+                "SAMU-Divinópolis": ["Aguanil", "Araújos", "Arcos", "Bambuí", "Bom Despacho", "Bonfim", "Brumadinho", "Camacho", "Campo Belo", "Cana Verde", "Candeias", "Carmo da Mata", "Carmo do Cajuru, Carmópolis de Minas", "Cláudio", "Conceição do Pará", "Córrego Danta", "Córrego Fundo", "Cristais", "Crucilândia", "Divinópolis", "Dores do Indaiá", "Esmeraldas", "Estrela do Indaiá, Florestal", "Formiga", "Igarapé", "Igaratinga", "Iguatama", "Itaguara", "Itapecerica", "Itatiaiuçu", "Itaúna", "Japaraíba", "Juatuba", "Lagoa da Prata", "Leandro Ferreira", "Luz", "Mário Campos", "Martinho Campos", "Mateus Leme", "Medeiros", "Moema", "Nova Serrana", "Oliveira", "Onça de Pitangui", "Pains", "Pará de Minas", "Passa Tempo", "Pedra do Indaiá", "Perdigão", "Piedade dos Gerais", "Piracema", "Pitangui", "Rio Manso", "Santana do Jacaré", "Santo Antônio do Amparo", "Santo Antônio do Monte", "São Francisco de Paula", "São Gonçalo do Pará", "São Joaquim de Bicas", "São José da Varginha", "São Sebastião do Oeste", "Serra da Saudade", "Tapiraí"],
+                "SAMU-Sete Lagoas": ["Araçaí", "Baldim", "Caetanópolis", "Cachoeira da Prata", "Cordisburgo", "Fortuna de Minas", "Inhaúma", "Jequitibá", "Maravilhas", "Papagaios", "Paraopeba", "Pompéu", "Santana de Pirapama", "Sete Lagoas"],
+                "SAMU-Contagem": ["Contagem", "Ibirité", "Sarzedo"],
+                "SAMU-Betim": ["Betim"]
+            },
+            
+            // Árvore de decisão com perguntas, orientações e opções de navegação
+            treeData: {
+                1: {
+                    question: "Qual é a emergência? Entenda exatamente o que está acontecendo.",
+                    guidance: "<strong>Saudação inicial:</strong> Atenda a ligação dizendo:<strong> Bombeiros, emergência!</strong> Atendente [seu nome] Bom dia/tarde/noite. <br><br><strong>Perguntas essenciais:</strong><ul><li>Qual o seu nome? (Caso o solicitante não queira se identificar, registre como anônimo).</li><li>Qual sua emergência?</li><li>Qual seu endereço? (busque por referências do local da ocorrência)</li></ul><strong>Registro no CAD:</strong> A chamada é criada no CAD após inserir os dados iniciais. <br><strong>Regra dos 5W + H:</strong> (sempre que possível)<ul><li><strong>O que aconteceu?</strong> (Ex: incêndio em casa, atropelamento)</li><li><strong>Onde?</strong> (Local, referência, município)</li><li><strong>Quem?</strong> (Número de vítimas, perfil das pessoas)</li><li><strong>Quando?</strong> (Agora, há quanto tempo?)</li><li><strong>Como?</strong> (Causas possíveis: caiu de altura, batida etc.)</li><li><strong>Por quê?</strong> (Se souber ou deduzir)</li></ul><strong>Comentários/Histórico:</strong> Use o campo de histórico/comentários para informações extras com as seguintes abreviações:<br><strong>SIT:</strong> Situação no local (ex: “casa em chamas, moradores saíram”). <br><strong>VIT:</strong> Quantidade e condição das vítimas (ex: “1 adulto consciente, queimado”). <br><strong>REF:</strong> Referências adicionais (ex: “próximo ao campo do bairro X”). <br><strong>TAC:</strong> Tempo do acontecimento (ex: “5 minutos”).",
+                    options: [
+                        { text: "Incêndio, Fumaça ou Explosão", next: 2 },
+                        { text: "Acidente / Mal Súbito", next: 20 },
+                        { text: "Salvamento (Pessoa ou Animal)", next: 30 },
+                        { text: "Risco de Desabamento / Insetos / Queda de Árvore", next: 40 },
+                        { text: "Outros Assuntos (Informação, Engano)", next: 100 }
+                    ]
+                },
+
+		// Incêndios (Nós de 2 a 16)
+                2: {
+                    question: "Há pessoas feridas ou em perigo imediato?",
+                    guidance: "<strong>Avaliação de Risco à Vida (Prioridade Máxima):</strong> Esta é uma situação crítica que exige ação imediata. <br> <br><strong>Perguntas Essenciais para o Repasse:</strong><ul><li>Quantas pessoas estão envolvidas?</li><li>Qual a condição aparente dessas pessoas (conscientes, presas, queimadas, etc.)?</li><li>Qual o tipo de perigo imediato (chamas, fumaça, estrutura instável, etc.)?</li></ul><br><strong>Ação:</strong><ul><li>Crie a chamada,  coloque o <i>Alerta de chamada</i> e classifique a natureza como de <i>Alta</i> prioridade.</li><li>Repasse a chamada <strong>imediatamente</strong> ao Supervisor BM de Teleatendimento, fornecendo todas as informações detalhadas coletadas.</li></ul>",
+                    options: [
+                        { text: "Existem Pessoas feridas", next: 3 },
+                        { text: "Existem Pessoas em perigo imediato", next: 3 },
+                        { text: "Sem pessoas feridas ou em perigo", next: 4 },
+                        { text: "Solicitante não sabe informar", next: 4 }
+                    ]
+                },
+                3: {
+                    question: "Há pessoas presas ou sem condições de sair do local?",
+                    guidance: "<strong>Avaliação de Risco à Vida (Prioridade Máxima):</strong> Esta é uma situação de altíssimo risco que demanda informações precisas para o resgate. <br> <br><strong>Perguntas Essenciais para o Repasse:</strong><ul><li>Quantas pessoas estão presas ou sem condições de sair?</li><li>Onde exatamente elas estão (ex: em qual cômodo, sob escombros, dentro do veículo)?</li><li>O que está impedindo a saída (ex: portas bloqueadas, fogo, fumaça, estrutura caída)?</li><li>Qual a condição aparente dessas pessoas (conscientes, feridas, em pânico)?</li></ul><strong>Ação:</strong><ul><li>Crie a chamada,  coloque o <i>Alerta de chamada</i> e classifique a natureza como de <i>Alta</i> prioridade.</li><li>Repasse a chamada <strong>imediatamente</strong> ao Supervisor BM de Teleatendimento, fornecendo todas as informações detalhadas coletadas.</li></ul>",
+                    options: [
+                        { text: "Existem Pessoas presas no local", next: 4 },
+                        { text: "Existem Pessoas sem condições de sair do local", next: 4 },
+                        { text: "Local desocupado", next: 4 }
+                    ]
+                },
+                4: {
+                    question: "Há risco de explosão ou desabamento?",
+                    guidance: "<strong>Avaliação de Risco à Vida (Prioridade Máxima):</strong> Esta é uma situação extremamente perigosa que exige coleta de dados detalhados para uma resposta eficaz. <br> <br><strong>Perguntas Essenciais para o Repasse:</strong><ul><li>Qual o tipo de risco (ex: vazamento de gás, estrutura rachada, barulhos estranhos)?</li><li>Qual a localização exata do risco (ex: qual andar, qual parte da estrutura)?</li><li>Há pessoas no local ou nas proximidades?</li><li>Há sinais visíveis (ex: fumaça, cheiro forte, rachaduras grandes, inclinação da estrutura)?</li></ul><strong>Ação:</strong><ul><li>Crie a chamada,  coloque o <i>Alerta de chamada</i> e classifique a natureza como de <i>Alta</i> prioridade.</li><li>Repasse a chamada <strong>imediatamente</strong> ao Supervisor BM de Teleatendimento, fornecendo todas as informações detalhadas coletadas.</li></ul>",
+                    options: [
+                        { text: "Existe risco de explosão", next: 5 },
+                        { text: "Existe risco de desabamento", next: 5 },
+                        { text: "Sem risco de explosão ou desabamento", next: 5 }
+                    ]
+                },
+                5: {
+                    question: "Onde está o Incêndio ou a Fumaça?",
+                    guidance: "<strong>Grupo O: Explosão e Incêndio</strong> <br>Este grupo engloba ocorrências de incêndios e explosões, que demandam o acionamento de caminhões de combate a incêndio (Auto-Bombas, Auto-Bombas-Tanque, Auto-Bombas-Salvamento). Lembre-se: incêndio é o fogo em descontrole com potencial de causar danos. <br> <br><strong>Para direcionar o atendimento, identifique o local e o tipo de incêndio:</strong><ul><li>O fogo/fumaça está em um prédio, casa ou outro tipo de construção?</li><li>Está em uma área de mata, terreno baldio ou ao ar livre?</li><li>É um veículo (carro, moto, caminhão, etc.)?</li><li>Envolve postes, fiação ou transformadores elétricos?</li><li>Há algo mais específico, como uma explosão, vazamento de gás ou fogo em outros materiais?</li></ul>",
+                    options: [
+                        { text: "Incêndio em Edificação", next: 6 },
+                        { text: "Incêndio em Vegetação ou área externa", next: 10 },
+                        { text: "Incêndio em Veículo", next: 12 },
+                        { text: "Incêndio em Instalação Elétrica (Poste/Rede)", next: 16 },
+                        { text: "Outros riscos (Explosão, Princípio de Incêndio, Vazamento)", next: 14 }
+                    ]
+                },
+                6: {
+                    question: "Você está vendo fogo ou Fumaça agora?",
+                    guidance: "<strong>Confirmação Visual:</strong> É crucial confirmar se há fogo ou fumaça visível para entender o estágio do incêndio e planejar a resposta. <br> <br><strong>Perguntas Essenciais:</strong><ul><li>O solicitante está dentro ou fora do imóvel?</li><li>Ele/Ela vê fogo ou apenas fumaça?</li><li>Onde exatamente o fogo/fumaça está localizado (ex: qual cômodo, qual andar, no telhado)?</li></ul>",
+                    options: [
+                        { text: "Fogo visível", next: 7 },
+                        { text: "Apenas fumaça", next: 7 },
+                        { text: "Solicitante não sabe informar", next: 8 }
+                    ]
+                },
+                7: {
+                    question: "O fogo está apenas em um cômodo ou se espalhou para outros locais?",
+                    guidance: "<strong>Extensão do Incêndio em Edificações:</strong> Entender a dimensão do incêndio é fundamental para o planejamento e o acionamento das equipes adequadas. <br> <br><strong>Perguntas Essenciais:</strong><ul><li>Quantos cômodos ou andares estão em chamas ou afetados pela fumaça?</li><li>O fogo está se espalhando rapidamente?</li><li>Há risco de atingir edificações vizinhas? (Pergunte sobre a proximidade e tipo de construção ao redor)</li><li>Há materiais combustíveis próximos que possam agravar a situação?</li></ul>",
+                    options: [
+                        { text: "Multiplos cômodos/pavimentos afetados", next: 8 },
+                        { text: "Somente um cômodo afetado", next: 8 },
+                        { text: "Fogo ameaça imóveis vizinhos", next: 8 },
+                        { text: "Princípio ou suspeita", next: 8 }
+                    ]
+                },
+                8: {
+                    question: "Que tipo de edificação está pegando fogo?",
+                    guidance: "<strong>Classificação da Edificação:</strong> O tipo de edificação impacta diretamente o risco e a complexidade do combate, influenciando o número e tipo de equipes a serem acionadas. Edificações com grande concentração de pessoas ou materiais perigosos exigem prioridade. <br> <br><strong>Perguntas Essenciais para Classificação:</strong><ul><li>É um local com grande fluxo ou concentração de pessoas (ex: hospital, escola, shopping, asilo, teatro)?</li></li><li>É um prédio de apartamentos ou uma casa particular?</li><li>É um galpão, depósito ou área industrial? Está ocupado ou desocupado?</li><li>Há informações sobre materiais perigosos armazenados no local?</li></ul>",
+                    options: [
+                        { text: "Hospital/escola/asilo/local com muitas pessoas", next: 9 },
+                        { text: "Prédio residencial", next: 9 },
+                        { text: "Casa unifamiliar", next: 9 },
+                        { text: "Prédio comercial ou misto", next: 9 },
+                        { text: "Galpão/depósito desocupado", next: 9 }
+                    ]
+                },
+                9: {
+                    question: "A via permite acesso para caminhão?",
+                    guidance: "<strong>Acesso da Viatura:</strong> É <strong>fundamental</strong> confirmar se a via até o local da ocorrência permite o acesso de caminhões de grande porte (Auto-Bombas, Auto-Bombas-Tanque). Isso impacta diretamente o tempo de resposta, o despacho da equipe e a segurança operacional. <br> <br><strong>Perguntas Essenciais para Avaliar o Acesso:</strong><ul><li>A rua é estreita? Há curvas acentuadas ou obstáculos (ex: postes caídos, árvores, veículos estacionados de forma irregular)?</li><li>É uma área rural com estradas de terra ou difícil pavimentação?</li><li>Há pontes ou viadutos com restrição de peso/altura?</li><li>O local é de difícil acesso por outros motivos (ex: vielas, becos, áreas de morro)?</li></ul>",
+                    options: [
+                        { text: "Sim", next: 90 },
+                        { text: "Não. Acesso difícil/área rural", next: 92 }
+                    ]
+                },
+                10: {
+                    question: "O fogo está próximo de casas ou outros prédios?",
+                    guidance: "<strong>Proximidade e Risco de Propagação:</strong> É fundamental avaliar se o incêndio em vegetação ou área externa oferece risco a edificações, veículos ou pessoas, determinando a urgência do atendimento. <br> <br><strong>Perguntas Essenciais:</strong><ul><li>A que distância o fogo está de casas, prédios, veículos ou outras estruturas?</li><li>Há risco de o fogo se espalhar para essas áreas?</li><li>Há pessoas próximas que possam ser afetadas pela fumaça ou chamas (especialmente idosos, crianças, ou com problemas respiratórios)?</li><li>Qual a altura das chamas e da vegetação?</li><li>O terreno é de fácil ou difícil acesso para as equipes? É área urbana ou rural?</li></ul>",
+                    options: [
+                        { text: "Menos de 50 metros de edificações", next: 11 },
+                        { text: "50 a 200 metros de edificações", next: 11 },
+                        { text: "Mais de 200 metros de edificações", next: 11 }
+                    ]
+                },
+                11: {
+                    question: "Qual o tamanho aproximado da área que está queimando?",
+                    guidance: "<strong>Estimativa da Extensão da Área:</strong> A dimensão da área em chamas é crucial para dimensionar os recursos necessários para o combate. Lembre-se: 1 hectare equivale a um quadrado de 100x100 metros. <br> <br><strong>Perguntas Essenciais para Estimativa:</strong><ul><li>O fogo está em uma área pequena (ex: um lote, um jardim)?</li><li>Parece ser uma área maior, equivalente a um campo de futebol ou mais?</li><li>Qual a altura das chamas e a densidade da vegetação?</li><li>O incêndio está em área urbana ou rural?</li><li>Há risco de o fogo atingir outras propriedades ou áreas sensíveis?</li></ul>",
+                    options: [
+                        { text: "Mais de 01 hectare queimando", next: 100 },
+                        { text: "Até 01 hectare queimando", next: 100 },
+                        { text: "Área pequena (um lote) queimando", next: 100 }
+                    ]
+                },
+                12: {
+                    question: "Qual o tipo de Veículo?",
+                    guidance: "<strong>Incêndio em Veículos:</strong> Estas ocorrências são de alta prioridade devido ao risco de explosão, vazamento de combustível e presença de vítimas. A coleta eficiente de informações é crucial para a segurança das equipes e o sucesso do combate. <br> <br><strong>Perguntas Essenciais:</strong><ul><li>Há alguém dentro do veículo ou nas proximidades?</li><li>Qual o tipo de veículo (carro de passeio, caminhão, ônibus, etc.)?</li><li>Qual o tipo de combustível (gasolina, diesel, GNV, híbrido, elétrico)?</li><li>Se for veículo de carga, qual o tipo de carga que está transportando? (Ex: inflamáveis, produtos químicos, etc.)</li><li>Onde o veículo está pegando fogo (ex: motor, parte traseira, interior)?</li><li>Há risco de explosão ou vazamento de combustível?</li></ul>",
+                    options: [
+                        { text: "Incêndio em carro", next: 13 },
+                        { text: "Incêndio em ônibus", next: 13 },
+                        { text: "Incêndio em caminhão", next: 13 },
+                        { text: "Incêndio em outro tipo de veículo", next: 13 }
+                    ]
+                },
+                13: {
+                    question: "Você está vendo fogo ou Fumaça agora?",
+                    guidance: "<strong>Confirmação Visual:</strong> É crucial confirmar se há fogo ou fumaça visível para entender o estágio do incêndio e planejar a resposta. <br> <br><strong>Perguntas Essenciais:</strong><ul><li>O solicitante está dentro ou fora do veículo?</li><li>Ele/Ela vê fogo ou apenas fumaça?</li><li>Onde exatamente o fogo/fumaça está localizado (ex: no motor, nos bancos, na carga transportada)?</li></ul>",
+                    options: [
+                        { text: "Fogo visível", next: 14 },
+                        { text: "Apenas fumaça", next: 14 },
+                        { text: "Não há confirmação visual", next: 14 }
+                    ]
+                },
+                14: {
+                    question: "Existe algum produto vazando?",
+                    guidance: "<strong>Outros Tipos de Incêndio e Vazamentos:</strong> Este bloco abrange situações diversas como explosões, vazamentos de substâncias perigosas e incêndios em contextos específicos (locomotivas, aeronaves, embarcações). A identificação do produto vazando é crucial para a segurança das equipes e o tipo de resposta. <br> <br><strong>Perguntas Essenciais:</strong><ul><li>Qual o tipo de produto que está vazando (gás, líquido inflamável, produto químico desconhecido)?</li><li>Há algum cheiro forte, fumaça ou vapor incomum?</li><li>O que causou o vazamento ou a explosão?</li><li>Há vítimas ou pessoas expostas ao produto?</li><li>Alguém já tentou conter o vazamento ou apagar o fogo? Com o quê?</li><li>O local é residencial, comercial ou industrial?</li></ul>",
+                    options: [
+                        { text: "Vazamento de GLP/gás natural", next: 15 },
+                        { text: "Vazamento de Líquido inflamável", next: 15 },
+                        { text: "Vazamento de Produto químico desconhecido", next: 15 },
+                        { text: "Não existe sinal de vazamento", next: 93 }
+                    ]
+                },
+                15: {
+                    question: "O vazamento é em área aberta ou fechada?",
+                    guidance: "<strong>Avaliação do Ambiente do Vazamento:</strong> A localização do vazamento (ambiente aberto ou fechado) é crucial para determinar o nível de risco e a estratégia de resposta. Vazamentos em ambientes fechados concentram gases/vapores, aumentando significativamente o perigo de explosão ou intoxicação. <br> <br><strong>Perguntas Essenciais para Avaliação:</strong><ul><li>Se for ambiente fechado, qual o tamanho do local? Há ventilação? Quantas pessoas estão dentro ou estavam no momento do vazamento?</li><li>Se for área aberta, o vazamento está próximo a ralos, bueiros, cursos d'água ou áreas de grande circulação de pessoas?</li><li>Qual a intensidade do vazamento? É um gotejamento, um fluxo contínuo ou um jato?</li><li>Há alguma fonte de ignição próxima (ex: chamas, faíscas, equipamentos elétricos)?</li></ul><strong>Orientação:</strong> Oriente o solicitante a isolar a área em 100m, evitar contato com líquidos/vapores e não usar equipamentos elétricos.",
+                    options: [
+                        { text: "Ambiente fechado", next: 91 },
+                        { text: "Área aberta", next: 100 }
+                    ]
+                },
+                16: {
+                    question: "A CEMIG já foi acionada?",
+                    guidance: "<strong>Incêndio em Instalações Elétricas:</strong> O risco elétrico é a principal preocupação em ocorrências envolvendo instalações públicas (postes, transformadores, fiação). O combate ao fogo só pode ser iniciado com segurança após a interrupção da energia pela concessionária. <br> <br><strong>Ações Essenciais:</strong><ul><li><strong>Prioridade:</strong> A segurança é primordial. Oriente o solicitante a manter distância e isolar a área, se possível.</li><li><strong>Avaliação:</strong> O fogo está atingindo fios, transformadores ou outros equipamentos elétricos?</li><li><strong>Risco:</strong> Há algo próximo que possa pegar fogo (ex: vegetação, edificações, veículos)?</li><li><strong>CEMIG:</strong> Se a CEMIG já foi acionada, qual o número do protocolo? (Isso agiliza a coordenação).</li></ul>",
+                    options: [
+                        { text: "CEMIG já foi acionada", next: 93 },
+                        { text: "Não acionaram a CEMIG ", next: 100 }
+                    ]
+                },
+
+                // APH - Atendimento Pré-Hospitalar (nós de 20 a 29)
+                20: {
+                    question: "A vítima está consciente ou responde a estímulos?",
+                    guidance: "<strong>APH - Avaliação do Nível de Consciência:</strong> É o primeiro passo crucial para determinar a gravidade da vítima e a urgência do atendimento. <br> <br><strong>Oriente o solicitante como avaliar:</strong><ul><li><strong>Chame a vítima:</strong> Pergunte em voz alta 'Você está bem?'.</li><li><strong>Toque:</strong> Se não responder, toque ou chacoalhe levemente os ombros da vítima.</li><li><strong>Observe:</strong> Ela abre os olhos, fala, ou reage a algum estímulo?</li><li><strong>Pergunte ao solicitante:</strong> 'A vítima responde quando você fala com ela ou toca nela?'</li></ul>",
+                    options: [
+                        { text: "Vítima consciente", next: 21 },
+                        { text: "Vítima incosciente", next: 21 }
+                    ]
+                },
+                21: {
+                    question: "A vítima respira normalmente?",
+                    guidance: "<strong>Urgência Crítica - Avaliação da Respiração:</strong> A avaliação da respiração é um dos indicadores mais importantes de uma emergência grave, como Parada Cardiorrespiratória (PCR) ou Obstrução de Vias Aéreas por Corpo Estranho (OVACE). <br> <br><strong>Oriente o solicitante como avaliar a respiração:</strong><ul><li><strong>Observe o peito:</strong> O peito da vítima sobe e desce?</li><li><strong>Ouça:</strong> Há algum som de respiração (sopros, chiados, roncos)?</li><li><strong>Sinta:</strong> Aproxime o ouvido do nariz/boca da vítima para sentir o air.</li><li><strong>Pergunte:</strong> 'A vítima está respirando de forma regular e sem esforço, ou está com dificuldade, ofegante, ou não respira de jeito nenhum?'</li></ul><br><strong>Classificação da Urgência:</strong><ul><li><strong>Vítima respira normalmente:</strong> Siga para a próxima avaliação.</li><li><strong>Vítima em Parada Cardiorrespiratória (PCR):</strong> Não respira e não responde. <strong>PRIORIDADE MÁXIMA.</strong></li><li><strong>Vítima com Obstrução de Vias Aéreas (OVACE):</strong> Engasgando, sem conseguir falar ou tossir. <strong>PRIORIDADE MÁXIMA.</strong></li><li><strong>Vítima com dificuldade em respirar (PR):</strong> Respiração ofegante, ruidosa, com esforço. <strong>PRIORIDADE MÁXIMA.</strong></li></ul>",
+                    options: [
+                        { text: "Vítima respira normalmente", next: 22 },
+                        { text: "Vítima em Parada Cardiorrespiratória", next: 100 }, // PCR - prioridade máxima
+                        { text: "Vítima com Obstrução de vias aéreas", next: 100 }, // OVACE - prioridade máxima
+                        { text: "Vítima com dificuldade em respirar", next: 100 } // PR - prioridade máxima
+                    ]
+                },
+                22: {
+                    question: "A queixa é clínica (mal súbito, dor) ou traumática (queda, batida)?",
+                    guidance: "<strong>Classificação da Natureza da Ocorrência (Clínica vs. Traumática):</strong> É fundamental classificar corretamente a natureza da emergência para direcionar o atendimento do APH. <br><ul><li><strong>Queixa Clínica:</strong> Refere-se a problemas de saúde internos, sem causa externa aparente. Ex: mal súbito, dor no peito, desmaio, convulsão, febre alta, dificuldade para respirar sem trauma.</li><li><strong>Queixa Traumática:</strong> Refere-se a lesões causadas por uma força externa. Ex: queda, atropelamento, acidente de trânsito, ferimento por arma branca/fogo, queimadura, choque elétrico.</li></ul><br><strong>Pergunte ao solicitante:</strong> 'O que aconteceu para a vítima estar nesta situação? Foi um problema de saúde ou algum tipo de acidente/lesão?'",
+                    options: [
+                        { text: "Clínica", next: 23 },
+                        { text: "Traumática", next: 24 }
+                    ]
+                },
+                23: {
+                    question: "A vítima apresenta sinais de risco: fala incompreensível, pele fria, respiração difícil?",
+                    guidance: "<strong>Instabilidade Clínica - Identificação de Sinais de Risco Iminente:</strong> É crucial identificar rapidamente sinais que indiquem uma piora do quadro clínico da vítima, necessitando de atendimento prioritário. <br> <br><strong>Perguntas Essenciais para Identificar Sinais de Risco:</strong><ul><li><strong>Fala:</strong> A vítima consegue falar normalmente? A fala está arrastada, confusa ou incompreensível?</li><li><strong>Pele:</strong> A pele está pálida, fria, suada ou azulada (cianótica)?</li><li><strong>Respiração:</strong> A respiração está muito rápida, muito lenta, superficial ou com muito esforço?</li><li><strong>Outros sinais:</strong> Há dor intensa, tontura, confusão mental, desmaio, sangramento visível, ou qualquer outra mudança súbita no estado da vítima?</li></ul><br><strong>Classificação:</strong><ul><li><strong>Vítima em estado grave:</strong> Se qualquer um desses sinais de risco estiver presente. <strong>PRIORIDADE MÁXIMA.</strong></li><li><strong>Vítima estável:</strong> Se nenhum desses sinais estiver presente e a vítima parecer consciente e sem piora.</li></ul>",
+                    options: [
+                        { text: "Vítima em estado grave", next: 100 },  // TRAUMA GRAVE - prioridade máxima
+                        { text: "Vítima estável", next: 100 }
+                    ]
+                },
+                24: {
+                    question: "Há sangramento ativo, fraturas ou dor intensa?",
+                    guidance: "<strong>Gravidade do Trauma - Avaliação da Urgência:</strong> A presença de sangramento ativo, fraturas ou dor intensa indica um trauma de maior gravidade, exigindo atendimento prioritário. <br> <br><strong>Perguntas Essenciais para Avaliar o Trauma (Instrua o Solicitante):</strong><ul><li><strong>Sangramento:</strong> Há algum sangramento visível? Onde? É um sangramento pequeno, moderado ou intenso (jorrando)?</li><li><strong>Fraturas/Deformidades:</strong> Há alguma parte do corpo com deformidade, inchaço significativo, ou a vítima relata ter ouvido um 'estalo' ou 'quebra'?</li><li><strong>Dor:</strong> A vítima está sentindo dor? Qual a intensidade da dor (de 0 a 10, sendo 10 a pior dor possível)? Onde é a dor?</li><li><strong>Mobilidade:</strong> A vítima consegue mover a parte do corpo afetada?</li></ul><br><strong>Classificação:</strong><ul><li><strong>Vítima com sangramento ativo:</strong> Se houver sangramento que não para ou é intenso. <strong>PRIORIDADE MÁXIMA.</strong></li><li><strong>Vítima com fratura:</strong> Se houver suspeita de fratura ou deformidade. <strong>PRIORIDADE MÁXIMA.</strong></li><li><strong>Vítima com muita dor:</strong> Se a dor for incapacitante ou muito intensa. <strong>PRIORIDADE MÁXIMA.</strong></li><li><strong>Vítima sem lesão grave:</strong> Se não houver sangramento ativo, fraturas aparentes ou dor intensa.</li></ul>",
+                    options: [
+                        { text: "Vítima com sangramento", next: 100 }, // SANGRAMENTO - prioridade máxima
+                        { text: "Vítima com fratura", next: 100 },
+                        { text: "Vítima com muita dor", next: 100 },
+                        { text: "Vítima sem lesão grave", next: 100 }
+                    ]
+                },
+
+                // Salvamento (nós de 30 a 36)
+                30: {
+                    question: "Há pessoas feridas ou em perigo imediato?",
+                    guidance: "<strong>Avaliação de Risco à Vida (Prioridade Máxima):</strong> Esta é uma situação crítica que exige ação imediata. <br> <br><strong>Perguntas Essenciais para o Repasse:</strong><ul><li>Quantas pessoas estão envolvidas?</li><li>Qual a condição aparente dessas pessoas (conscientes, presas, feridas, etc.)?</li><li>Qual o tipo de perigo imediato (afogamento, queda, ataque, etc.)?</li></ul><br><strong>Ação:</strong><ul><li>Crie a chamada,  coloque o <i>Alerta de chamada</i> e classifique a natureza como de <i>Alta</i> prioridade.</li><li>Repasse a chamada <strong>imediatamente</strong> ao Supervisor BM de Teleatendimento, fornecendo todas as informações detalhadas coletadas.</li></ul>",
+                    options: [
+                        { text: "Existem Pessoas feridas", next: 31 },
+                        { text: "Existem Pessoas em perigo imediato", next: 31 },
+                        { text: "Sem pessoas feridas ou em perigo", next: 31 },
+                        { text: "Solicitante não sabe informar", next: 31 }
+                    ]
+                },
+                31: {
+                    question: "Qual o Tipo de Salvamento?",
+                    guidance: "<strong>Classificação do Tipo de Salvamento:</strong> A correta identificação do tipo de salvamento é essencial para o despacho da equipe e dos equipamentos adequados. <br> <br><strong>Tipos de Salvamento e suas características:</strong><ul><li><strong>Pessoa Presa em Ferragens:</strong> Geralmente em acidentes veiculares, onde a vítima está impossibilitada de sair do veículo.</li><li><strong>Pessoa Ilhada ou Afogada:</strong> Vítima em meio líquido (inundação, rio, piscina) ou isolada por água.</li><li><strong>Pessoa Desaparecida:</strong> Busca por indivíduos perdidos, especialmente em áreas de mata ou de difícil acesso.</li><li><strong>Ameaça de Suicídio:</strong> Indivíduo em situação de risco iminente de tirar a própria vida, muitas vezes em altura ou local perigoso.</li><li><strong>Animal em Risco ou Agressivo:</strong> Animais em perigo (presos, feridos) ou que representam ameaça à população.</li></ul><br><strong>Pergunte ao solicitante:</strong><ul><li>O que exatamente está acontecendo?</li><li>A pessoa/animal está presa, na água ou perdida?</li><li>A pessoa está ameaçando a própria vida?</li><li>É um animal perigoso que está onde?</li></ul>",
+                    options: [
+                        { text: "Acidente de trânsito", next: 32 },
+                        { text: "Pessoa Ilhada ou Afogada", next: 33 },
+                        { text: "Pessoa Desaparecida", next: 34 },
+                        { text: "Ameaça de Suicídio", next: 35 },
+                        { text: "Animal em Risco ou Agressivo", next: 36 }
+                    ]
+                },
+                32: {
+                    question: "Existem vítimas presas ou o veículo está instável?",
+                    guidance: "<strong>Salvamento Veicular:</strong> Este tipo de ocorrência envolve colisões com vítimas presas às ferragens ou veículos em situações de instabilidade (tombados, em ribanceiras, capotados) que necessitam de estabilização ou técnicas de desencarceramento (expansão, corte). <br> <br><strong>Perguntas Essenciais:</strong><ul><li>Quantas vítimas estão presas às ferragens? Qual a condição delas (conscientes, feridas)?</li><li>O veículo está instável (tombado, em ribanceira, com risco de queda)?</li><li>Há vazamento de combustível, óleo ou algum tipo de carga (se for veículo de carga)?</li><li>Qual a localização exata do acidente e pontos de referência?</li><li>Há risco de incêndio ou explosão?</li></ul>",
+                    options: [
+                        { text: "Vítima presa nas ferragens", next: 100 },
+                        { text: "Veículo com risco de tombamento ou queda", next: 100 },
+                        { text: "Acidente sem vítimas presas", next: 100 }
+                    ]
+                },
+                33: {
+                    question: "Quantas vítimas estão na água ou ilhadas? Elas estão visíveis?",
+                    guidance: "<strong>Afogamento / Ilhamento:</strong> O Corpo de Bombeiros atua no resgate de vítimas em meio líquido, incluindo pessoas ilhadas em inundações/alagamentos, e salvamento de vítimas de afogamento (que não evoluíram a óbito) ou recuperação de corpos submersos. <br> <br><strong>Perguntas Essenciais:</strong><ul><li>Quantas pessoas estão na água ou ilhadas?</li><li>Elas estão conscientes? Conseguem se comunicar?</li><li>Qual o nível da água? Há correnteza forte?</li><li>Onde exatamente a vítima está (ex: rio, piscina, enchente, lagoa)?</li><li>Há algum objeto flutuando ou algo que a vítima possa se segurar?</li><li>A vítima está visível ou submersa? Há quanto tempo?</li></ul>",
+                    options: [
+                        { text: "Vítima Visível ou ilhada", next: 100 },
+                        { text: "Vítima Submersa ou não localizada", next: 100 }
+                    ]
+                },
+                34: {
+                    question: "A vítima desaparecida é criança, idoso, pessoa com deficiência ou transtorno mental?",
+                    guidance: "<strong>Busca de Pessoa Desaparecida:</strong> A atuação do CBMMG foca em áreas remotas, de difícil acesso ou matas. A coleta de informações detalhadas é vital para traçar o perfil da vítima e direcionar as equipes de busca. (Natureza S 04.007). <br> <br><strong>Perguntas Essenciais para a Busca:</strong><ul><li>Onde exatamente a pessoa desapareceu? (Ex: trilha, floresta, área rural, cidade?)</li><li>Há quanto tempo a pessoa está desaparecida?</li><li>Qual o perfil da vítima (idade, condição de saúde, mobilidade, uso de medicamentos)?</li><li>Quais eram as últimas vestimentas da pessoa? Havia algum objeto de valor ou identificação com ela?</li><li>Qual a condição climática atual no local do desaparecimento? (Chuva, frio, calor)</li><li>Há alguma informação sobre para onde a pessoa poderia ter ido ou o que estava fazendo?</li><li>Há histórico de desaparecimentos anteriores ou problemas de saúde mental?</li></ul>",
+                    options: [
+                        { text: "Criança desparecida", next: 100 },
+                        { text: "Idoso desparecida", next: 100 },
+                        { text: "Pessoa com deficiência ou trantorno desparecida", next: 100 },
+                        { text: "Desaparecimento de adulto Recente (menos de 6h)", next: 100 },
+                        { text: "Desaparecimento de adulto Prolongado (mais de 6h)", next: 100 }
+                    ]
+                },
+                35: {
+                    question: "A pessoa ameaça se ferir ou está em local de risco (altura, ponte, telhado)?",
+                    guidance: "<strong>Atendimento a Tentativa de Suicídio:</strong> O Corpo de Bombeiros atua em situações de risco iminente, especialmente em locais elevados (árvores, prédios, pontes) que exigem técnicas de salvamento em altura. É crucial diferenciar se a ação já foi iniciada ou se ainda é uma ameaça, e se há risco para outras pessoas. <br> <br><strong>Perguntas Essenciais:</strong><ul><li>A pessoa está ameaçando se machucar ou já iniciou alguma ação (ex: se cortou, tomou algo, pulou, está prestes a pular)?</li><li>Onde a pessoa está localizada (ex: em altura, em local perigoso, dentro de um veículo, em casa)?</li><li>A pessoa está sozinha ou há alguém com ela?</li><li>Há algum negociador ou profissional de saúde mental no local?</li><li>Há risco para outras pessoas nas proximidades?</li><li>A pessoa está trancada em algum ambiente?</li></ul><strong>Ação:</strong><ul><li>Crie a chamada,  coloque o <i>Alerta de chamada</i> e classifique a natureza como de <i>Alta</i> prioridade.</li><li>Repasse a chamada <strong>imediatamente</strong> ao Supervisor BM de Teleatendimento, fornecendo todas as informações detalhadas coletadas.</li></ul>",
+                    options: [
+                        { text: "Ameaça ativa ou tentativa", next: 100 },
+                        { text: "Relato anterior sem risco atual", next: 93 },
+                        { text: "Tentante em óbito", next: 100 }
+                    ]
+                },
+                36: {
+                    question: "O animal representa risco a pessoas ou está em local de difícil acesso?",
+                    guidance: "<strong>Salvamento Envolvendo Animal:</strong> Esta categoria abrange situações em que animais estão em perigo (presos, feridos, em locais de difícil acesso) ou representam uma ameaça à segurança da população (agressivos, soltos em via pública). <br> <br><strong>Perguntas Essenciais:</strong><ul><li>Qual o tipo de animal (ex: cão, gato, cobra, cavalo, animal silvestre)?</li><li>Onde o animal está localizado (ex: em altura, em bueiro, em via pública, dentro de uma casa)?</li><li>Qual a situação do animal (ex: preso, ferido, agressivo, doente, abandonado)?</li><li>O animal oferece risco a pessoas ou outros animais? (Ex: mordeu alguém, está atacando?)</li><li>Há alguma pessoa tentando ajudar o animal?</li><li>Já foi acionado algum órgão de controle animal ou ambiental?</li></ul>",
+                    options: [
+                        { text: "Animal preso ou ferido", next: 100 },
+                        { text: "Animal preso ameaçando pessoas", next: 100 },
+                        { text: "Animal solto ameaçando pessoas", next: 100 },
+                        { text: "Animal não está ameaçando pessoas", next: 93 }
+                    ]
+                },
+
+                // Perigo Iminente (nós de 40 a 47)
+                40: {
+                    question: "Qual o Tipo de Risco Iminente?",
+                    guidance: "<strong>Grupo P: Prevenção e Vistoria (Risco Iminente):</strong> Este grupo abrange situações em que o perigo ainda não se concretizou, mas há um risco iminente de ocorrência. As principais demandas incluem riscos de queda de árvores, enxames de insetos agressivos e riscos de desabamentos/desmoronamentos. A classificação correta é fundamental para o despacho adequado. <br> <br><strong>Pergunte ao solicitante para classificar o risco:</strong><ul><li>É uma árvore que ameaça cair?</li><li>São insetos (abelhas, marimbondos) que estão agressivos ou em local de risco?</li><li>É uma estrutura (muro, prédio, telhado) que parece que vai desabar?</li><li>É um deslizamento de terra ou um muro que está cedendo?</li><li>Há fios elétricos caídos e energizados?</li><li>É alguma outra situação que representa perigo imediato, mas não se encaixa nas categorias anteriores?</li></ul>",
+                    options: [
+                        { text: "Árvore com Risco de Queda", next: 41 },
+                        { text: "Insetos Agressivos (Abelhas, Marimbondos)", next: 42 },
+                        { text: "Estrutura com Risco de Desabamento", next: 43 },
+                        { text: "Deslizamento de Terra / Muro com Risco", next: 44 },
+                        { text: "Fios Energizados Caídos", next: 45 },
+                        { text: "Outra Situação Perigosa", next: 46 }
+                    ]
+                },
+                41: {
+                    question: "A árvore está inclinada, com galhos soltos ou ameaçando cair sobre algo?",
+                    guidance: "<strong>Árvore com Risco de Queda:</strong> O Corpo de Bombeiros atua em situações de risco iminente à vida e ao patrimônio, ou quando a árvore caída impede a mobilidade urbana. Não realizamos podas ornamentais. A triagem é vital para evitar deslocamentos desnecessários, especialmente em períodos chuvosos. <br> <br><strong>Perguntas Essenciais para Avaliação:</strong><ul><li>A árvore está visivelmente inclinada ou com galhos prestes a cair?</li><li>Há rachaduras no tronco, raízes expostas, ou sinais de doença na árvore?</li><li>Ela está tocando a fiação elétrica, uma estrutura (casa, muro) ou veículo?</li><li>Onde a árvore está localizada (via pública, quintal particular, área comum)?</li><li>Há pedestres, veículos ou edificações diretamente abaixo ou muito próximos à árvore?</li><li>O terreno ao redor está instável (ex: encharcado, com erosão)?</li><li>Houve alguma vistoria anterior ou tentativa de remoção?</li></ul><br><strong>Orientação (se for propriedade particular sem risco iminente):</strong> Oriente o solicitante a contatar um profissional particular ou a prefeitura.",
+                    options: [
+                        { text: "Árvore com risco aparente de queda", next: 47 },
+                        { text: "Árvore tombada sobre veículo", next: 47 },
+                        { text: "Árvore tombada sobre edificação", next: 47 },
+                        { text: "Solicitação de poda ou avaliação", next: 93 }
+                    ]
+                },
+                42: {
+                    question: "O enxame atacou alguém ou está em local de risco (escola, hospital, abrigo)?",
+                    guidance: "<strong>Enxame de Insetos Agressivos:</strong> O Corpo de Bombeiros atua na remoção segura de enxames de insetos agressivos (abelhas, marimbondos, vespas) que representem risco à população. A prioridade é a segurança, e a remoção ocorre, preferencialmente, em horários de menor movimentação. Lembre-se que algumas espécies são protegidas e o manejo deve ser feito por apicultores. <br> <br><strong>Perguntas Essenciais para Avaliação:</strong><ul><li>Qual o tipo de inseto? (É importante diferenciar abelhas, marimbondos, vespas)</li><li>O enxame está agressivo? Já atacou alguém? Há pessoas alérgicas próximas?</li><li>Onde o enxame está localizado (ex: em via pública, residência, caixa de energia, poste, muro, árvore)?</li><li>Há risco de o enxame se deslocar para uma área de maior circulação?</li><li>Há crianças, idosos ou pessoas com deficiência nas proximidades?</li></ul><br><strong>Orientação:</strong> Se não houver risco iminente ou se for uma espécie protegida, oriente o solicitante a buscar um apicultor ou órgão ambiental.",
+                    options: [
+                        { text: "Enxame atacando pessoas", next: 100 },
+                        { text: "Enxame em local de risco", next: 47 },
+                        { text: "Enxame não está atacando", next: 93 }
+                    ]
+                },
+                43: {
+                    question: "A estrutura apresenta rachaduras, inclinação ou já cedeu parcialmente?",
+                    guidance: "<strong>Estrutura com Risco de Desabamento:</strong> O acionamento de equipes de bombeiros para risco de desabamento considera sinais visíveis de comprometimento da estrutura (rachaduras, inclinação, estalos), desmoronamento parcial, e, principalmente, a presença de vítimas ou risco iminente à população. <br> <br><strong>Perguntas Essenciais para Avaliação:</strong><ul><li>Qual o tipo de estrutura que apresenta risco (ex: muro, telhado, varanda, laje, prédio inteiro)?</li><li>Há trincas grandes, rachaduras, inclinação visível, ou partes da estrutura já caíram?</li><li>A estrutura está emitindo algum som estranho (ex: estalos, rangidos)?</li><li>Há pessoas dentro ou muito próximas à estrutura?</li><li>O local é habitado ou desocupado?</li><li>Há risco de o desabamento afetar estruturas vizinhas ou vias públicas?</li></ul>",
+                    options: [
+                        { text: "Estrutura em risco de colapso", next: 47 },
+                        { text: "Estrutura cedeu parcialmente", next: 47 },
+                        { text: "Estrutura parece estável", next: 100 },
+                        { text: "Solicitante não sabe informar", next: 100 }
+                    ]
+                },
+                44: {
+                    question: "Há trincas, escorregamento de terra ou sinais de que o solo está cedendo?",
+                    guidance: "<strong>Deslizamento de Encostas e Taludes:</strong> A ocorrência de deslizamentos, mesmo que parciais, representa um risco significativo à vida e ao patrimônio. A avaliação rápida da situação é crucial. <br> <br><strong>Perguntas Essenciais para Avaliação:</strong><ul><li>O barranco ou encosta apresenta rachaduras, trincas, escorrimento de terra ou água?</li><li>Há árvores ou postes inclinados no local?</li><li>O deslizamento está próximo a casas, ruas ou veículos? Qual a distância?</li><li>Há pessoas no local ou em risco de serem atingidas?</li><li>Qual o tamanho aproximado da área que deslizou ou que está em risco?</li><li>Está chovendo no momento ou choveu intensamente nas últimas horas?</li></ul>",
+                    options: [
+                        { text: "Terreno está deslocando", next: 47 },
+                        { text: "Muro ou parte caiu", next: 47 },
+                        { text: "Parte do terreno deslocou", next: 47 },
+                        { text: "Solicitante não sabe informar", next: 100 }
+                    ]
+                },
+                45: {
+                    question: "Os fios estão em contato com pessoas, estruturas ou água?",
+                    guidance: "<strong>Fios Energizados Caídos:</strong> Esta é uma situação de <strong>altíssimo risco</strong> de choque elétrico e incêndio, exigindo o imediato isolamento da área e o acionamento urgente da concessionária de energia (CEMIG). <br> <br><strong>Ações Essenciais e Perguntas:</strong><ul><li><strong>Prioridade:</strong> Oriente o solicitante a manter distância de qualquer fio caído e a impedir que outras pessoas ou animais se aproximem.</li><li>Onde exatamente os fios caíram? (Ex: na rua, em cima de um veículo, em um telhado, no quintal?)</li><li>Os fios estão em contato com água, objetos metálicos, veículos ou alguma estrutura?</li><li>Há pessoas ou animais próximos ou em contato com os fios?</li><li>A CEMIG já foi acionada? Se sim, qual o número do protocolo de atendimento?</li><li>Há risco de incêndio devido aos fios?</li></ul>",
+                    options: [
+                        { text: "Existe risco direto ou contato com pessoas/objetos", next: 47 },
+                        { text: "Fios isolados ou rompidos, sem energia", next: 100 }
+                    ]
+                },
+                46: {
+                    question: "A situação representa risco imediato à integridade física de alguém?",
+                    guidance: "<strong>Outras Situações de Risco Iminente:</strong> Este bloco é para ocorrências diversas que representam perigo iminente, mas que não se enquadram nas categorias específicas anteriores. É fundamental coletar o máximo de detalhes possível para avaliar a necessidade de intervenção do Corpo de Bombeiros. <br> <br><strong>Perguntas Essenciais para Compreender a Situação:</strong><ul><li><strong>Descreva a situação:</strong> O que exatamente está acontecendo? Qual o tipo de perigo?</li><li><strong>Localização:</strong> Onde está ocorrendo essa situação perigosa? Há pontos de referência?</li><li><strong>Vítimas/Pessoas em Perigo:</strong> Há vítimas ou pessoas em perigo imediato devido a essa situação? Quantas? Qual a condição delas?</li><li><strong>Potencial de Dano:</strong> Qual o risco de agravamento da situação? Pode causar feridos, danos materiais significativos ou afetar uma área maior?</li><li><strong>Causa:</strong> Se souber, o que causou essa situação?</li><li><strong>Ações Tomadas:</strong> Alguém já tentou resolver ou intervir?</li></ul>",
+                    options: [
+                        { text: "Risco direto ou indireto claro", next: 47 },
+                        { text: "Situação de incômodo ou dúvida", next: 100 }
+                    ]
+                },
+                47: {
+                    question: "Há pessoas feridas ou em perigo imediato?",
+                    guidance: "<strong>Avaliação de Risco à Vida (Prioridade Máxima):</strong> Esta é uma situação crítica que exige ação imediata. <br> <br><strong>Perguntas Essenciais para o Repasse:</strong><ul><li>Quantas pessoas estão envolvidas?</li><li>Qual a condição aparente dessas pessoas (conscientes, presas, feridas, etc.)?</li><li>Qual o tipo de perigo imediato (queda, ataque, etc.)?</li></ul><br><strong>Ação:</strong><ul><li>Crie a chamada,  coloque o <i>Alerta de chamada</i> e classifique a natureza como de <i>Alta</i> prioridade.</li><li>Repasse a chamada <strong>imediatamente</strong> ao Supervisor BM de Teleatendimento, fornecendo todas as informações detalhadas coletadas.</li></ul>",
+                    options: [
+                        { text: "Existem Pessoas feridas", next: 100 },
+                        { text: "Existem Pessoas em perigo imediato", next: 100 },
+                        { text: "Sem pessoas feridas ou em perigo", next: 100 },
+                        { text: "Solicitante não sabe informar", next: 93 }
+                    ]
+                },
+
+                // Instruções e Conclusões de chamadas por natureza
+                90: {
+                    question: "Instruções de Segurança Imediata",
+                    guidance: "<strong>Para Incêndios com Pessoas em Risco:</strong> É crucial orientar o solicitante e pedir que ele ajude a orientar outras pessoas presentes no local até a chegada das equipes de resgate. <br> <br><strong>Instruções Essenciais para Segurança:</strong><ul><li><strong>Mantenha-se baixo:</strong> Próximo ao chão, onde a fumaça é menos densa e o ar é mais respirável.</li><li><strong>Proteja as vias aéreas:</strong> Se possível, molhe uma toalha ou pedaço de pano e cubra o nariz e a boca.</li><li><strong>Verifique portas:</strong> Não abra portas que estejam quentes ao toque. Use as costas da mão para verificar.</li><li><strong>Sinalize:</strong> Se não conseguir sair, sinalize sua localização na janela para que as equipes possam vê-lo.</li><li><strong>Evite elevadores:</strong> Nunca utilize elevadores em caso de incêndio; use as escadas.</li><li><strong>Mantenha a calma:</strong> Tente acalmar as pessoas ao seu redor e siga as instruções.</li></ul><br><strong>Ação:</strong> Após fornecer estas instruções, proceda com o registro detalhado no sistema CAD.",
+                    options: [] // Não há mais opções, o fluxo termina aqui
+                },
+                91: {
+                    question: "Instruções para Situações Críticas",
+                    guidance: "<strong>Para Vazamento de Gás:</strong> É fundamental orientar o solicitante e pedir que ele ajude a orientar outras pessoas presentes no local sobre as ações de segurança imediatas até a chegada das equipes. <br> <br><strong>Instruções Essenciais para Vazamento de Gás:</strong><ul><li><strong>Evacue imediatamente:</strong> Saia do local o mais rápido possível e afaste-se da edificação.</li><li><strong>Não utilize fontes de ignição: NÃO</strong> acenda fósforos, isqueiros, nem utilize equipamentos elétricos (celulares, lanternas).</li><li><strong>Não manipule a eletricidade: NÃO<strong> ligue ou desligue interruptores, tomadas ou qualquer aparelho elétrico.</li><li><strong>Busque um local seguro:</strong> Dirija-se a uma área aberta e ventilada, longe do cheiro de gás.</li><li><strong>Impeça o acesso:</strong> Oriente outras pessoas a não se aproximarem do local do vazamento.</li><li><strong>Feche o registro de gás:</strong> Se for seguro e souber como, feche o registro geral de gás.</li></ul><br><strong>Ação:</strong> Após fornecer estas instruções, proceda com o registro detalhado no sistema CAD.",
+                    options: [] // Não há mais opções, o fluxo termina aqui
+                },
+                92: {
+                    question: "Instruções para locais de difícil acesso",
+                    guidance: "<strong>Locais de acesso restrito:</strong> É fundamental orientar o solicitante a informar rotas alternativas para a chegada das equipes. <br> <br><strong>Perguntas Essenciais:</strong><ul><li>Existe rota alternativa ou ponto onde passa o caminhão?</li><li>Existem obstáculos? (ex.: beco, ponte, poste, portão fechado)</li></ul><br><strong>Orientação:</strong> Oriente o Solicitante a colocar uma pessoa na entrada para sinalizar.",
+                    options: [] // Não há mais opções, o fluxo termina aqui
+                },
+                93: {
+                    question: "Instruções sobre coleta de dados",
+                    guidance: "<strong>Coleta das informações:</strong> É fundamental obter do solicitante o máximo de informações para auxiliar as equipes. <br> <br><strong>Orientações finais:</strong><ul><li>Reforce orientações de segurança.</li><li>Informe que a ocorrência será atendida conforme prioridade.</li></ul><br><strong>Orientação:</strong> Oriente o Solicitante a manter o telefone livre e local acessível.",
+                    options: [] // Não há mais opções, o fluxo termina aqui
+                },
+
+                // Nó Final do Fluxo: Avaliação e Registro
+                100: {
+                    question: "Critérios para acionamento do Supervisor",
+                    guidance: "<strong>Acionamento Obrigatório</strong><ul><li>Parada cardiorrespiratória, obstrução de vias aéreas</li><li>Qualquer ocorrência de PRIORIDADE</li><li>Material perigoso com múltiplas vítimas</li><li>Incêndio em edificação de alto risco (hospital, escola, shopping)</li><li>Solicitação de apoio de múltiplas corporações</li><li>Chamadas com informações conflitantes ou confusas</li></ul> <br><strong>Acionamento Recomendado</strong><ul><li>Grande quantidade de rechamadas ou duplicadas</li><li>Incêndio florestal com mais de 2 hectares</li><li>Qualquer situação que o teleatendente julgue atípica</li><li>Chamadas de autoridades públicas</li></ul> <br>Todos os dados essenciais foram coletados. Proceda com o registro detalhado no sistema CAD.",
+                    options: [] // Não há mais opções, o fluxo termina aqui
+                }
+            }
+        };

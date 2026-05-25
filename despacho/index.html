@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Central de Despacho - SISP</title>
+
+  <!-- Fontes Institucionais -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Source+Sans+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="css\styles.css" />
+</head>
+<body>
+  <div class="page">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-inner">
+
+        <!-- Logo -->
+        <div class="logo-wrapper">
+          <img src="img\sisp-logo.png" alt="Logo SISP" class="logo-sisp-img">
+        </div>
+
+        <!-- Relógio -->
+        <div class="clock-wrapper">
+          <div class="clock-time">00:00:00</div>
+          <div class="clock-date">---</div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main">
+      <div class="main-inner">
+
+        <!-- Título -->
+        <section class="page-header">
+          <h1>Central de Despacho</h1>
+          <p>Selecione um sistema para iniciar suas operações.</p>
+        </section>
+
+        <!-- FILTROS -->
+        <section class="filters-bar">
+          <div class="filters-pills">
+            <button class="pill pill-active" type="button" data-filter="todos">Todos</button>
+            <button class="pill" type="button" data-filter="sistemas">Operacional</button>
+            <button class="pill" type="button" data-filter="mapas">Mapas e Rotas</button>
+            <button class="pill" type="button" data-filter="administrativo">Administrativo</button>
+            <button class="pill" type="button" data-filter="contingencia">Contingência</button>
+          </div>
+        </section>
+
+        <!-- GRID DE CARDS -->
+        <section class="cards-grid">
+
+          <!-- Operacionais -->
+          <a href="https://web.sids.mg.gov.br/reds/" target="_blank" class="card" data-category="sistemas">
+            <div class="card-icon"><span>📝</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>REDS</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Registro de Eventos de Defesa Social</p>
+            </div>
+          </a>
+
+          <a href="https://emergencia.ca.mg.gov.br/agent" target="_blank" class="card" data-category="sistemas">
+            <div class="card-icon"><span>🚨</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>Emergência MG</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Sistema de Despacho e Emergências</p>
+            </div>
+          </a>
+
+          <a href="https://siloc.seguranca.mg.gov.br/login" target="_blank" class="card" data-category="sistemas">
+            <div class="card-icon"><span>📡</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>SILOC MG</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Sistema de Localização e Ocorrências</p>
+            </div>
+          </a>
+
+          <!-- Mapas -->
+          <a href="https://geosite.policiamilitar.mg.gov.br/mapacad/main.jsp" target="_blank" class="card" data-category="mapas">
+            <div class="card-icon"><span>🗺️</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>Mapa CAD</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Georreferenciamento de viaturas</p>
+            </div>
+          </a>
+
+          <a href="https://www.google.com/maps" target="_blank" class="card" data-category="mapas">
+            <div class="card-icon"><span>📍</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>Google Maps</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Consulta de endereços e rotas</p>
+            </div>
+          </a>
+
+          <!-- Contingência -->
+          <a href="../cadoffline/pages/despacho/menudes.php" target="_blank" class="card" data-category="contingencia">
+            <div class="card-icon"><span>📋</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>CAD OFFLINE</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Formulário em caso de queda do CAD/REDS</p>
+            </div>
+          </a>
+
+          <!-- Administrativos -->
+          <a href="https://diao.sids.mg.gov.br" target="_blank" class="card" data-category="administrativo">
+            <div class="card-icon"><span>🛡️</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>DIAO</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Diretoria de Inteligência e Ações</p>
+            </div>
+          </a>
+
+        </section>
+
+      </div>
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="footer">
+      © 2025 SISP MG. Todos os direitos reservados.
+    </footer>
+
+  </div>
+
+  <script src="../shared.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

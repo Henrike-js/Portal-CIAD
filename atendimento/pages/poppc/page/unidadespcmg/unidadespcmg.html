@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Unidades PCMG</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .content-header {
+            background: white;
+            padding: 15px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .top-logo {
+            height: 55px;
+            margin-right: 20px;
+        }
+        .header-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .system-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--pc-dark);
+            font-size: 1.3rem;
+            margin-bottom: 2px;
+        }
+        .system-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .content-body {
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* Ajuste no form-group para o autocomplete funcionar bem */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative; 
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 1rem;
+            color: var(--text-main);
+            background-color: white;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: var(--pc-accent);
+        }
+        select:disabled {
+            background-color: #e2e8f0;
+            cursor: not-allowed;
+        }
+        
+        /* ---- ESTILOS DA NOVA LISTA DE AUTOCOMPLETAR ---- */
+        .autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 1px solid #cbd5e1;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            display: none; /* Escondida por padrão */
+        }
+        .autocomplete-list li {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--text-main);
+            transition: background 0.2s;
+        }
+        .autocomplete-list li:last-child {
+            border-bottom: none;
+        }
+        .autocomplete-list li:hover {
+            background-color: #f8fafc;
+            color: var(--pc-accent);
+            font-weight: 600;
+        }
+        
+        /* Cartão de Resultado */
+        .result-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-top: 30px;
+            border-left: 5px solid var(--pc-accent);
+            display: none; 
+        }
+        .result-card h3 {
+            margin-top: 0;
+            color: var(--pc-dark);
+            font-family: 'Montserrat', sans-serif;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+        .result-info {
+            margin: 10px 0;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+        .result-info strong {
+            color: #64748b;
+        }
+        .contact-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+
+        <header class="content-header">
+            <img src="../../img/logo.png" alt="Logo PCMG" class="top-logo">
+            <div class="header-text">
+                <div class="system-title">SISTEMA PCMG</div>
+                <div class="system-label">CONSULTA DE ENDEREÇOS E UNIDADES POLICIAIS</div>
+            </div>
+        </header>
+
+        <main class="content-body">
+            <div class="form-group">
+                <label for="cidade-input" id="question">1. Informe o Município:</label>
+                <input type="text" id="cidade-input" placeholder="Digite para buscar o município..." autocomplete="off">
+                <ul id="cidades-autocomplete" class="autocomplete-list"></ul>
+            </div>
+
+            <div class="form-group">
+                <label for="bairro-select" id="question">2. Filtre por Bairro (Opcional):</label>
+                <select id="bairro-select" disabled>
+                    <option value="">Aguardando seleção do município...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="unidade-select" id="question">3. Selecione a Unidade Policial:</label>
+                <select id="unidade-select" disabled>
+                    <option value="">Aguardando seleção...</option>
+                </select>
+            </div>
+
+            <div id="resultado" class="result-card">
+                <h3 id="res-nome">Nome da Unidade</h3>
+                
+                <div class="result-info"><strong>Endereço:</strong> <span id="res-endereco"></span></div>
+                <div class="result-info"><strong>Bairro:</strong> <span id="res-bairro"></span></div>
+                <div class="result-info"><strong>Município/Local:</strong> <span id="res-cidade"></span></div>
+                <div class="result-info"><strong>CEP:</strong> <span id="res-cep"></span></div>
+                
+                <div class="contact-section">
+                    <div class="result-info"><strong>Telefone:</strong> <span id="res-telefone"></span></div>
+                    <div class="result-info"><strong>E-mail:</strong> <span id="res-email"></span></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let unidadesDaPolicia = [];
+        let listaTodasCidades = []; // Guarda apenas os nomes das cidades únicos
+        let unidadesDoMunicipioAtual = []; 
+
+        function limparTexto(texto) {
+            if (!texto) return "";
+            return texto.replace(/^"+|"+$/g, '').trim();
+        }
+
+        fetch('UnidadesPCMG.csv')
+            .then(resposta => {
+                if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+                return resposta.arrayBuffer();
+            })
+            .then(buffer => {
+                const decoder = new TextDecoder('iso-8859-1');
+                const dados = decoder.decode(buffer);
+
+                const linhas = dados.split('\n');
+
+                for (let i = 1; i < linhas.length; i++) {
+                    if (linhas[i].trim() === '') continue;
+
+                    const colunas = linhas[i].split(';');
+
+                    if (colunas.length >= 12) {
+                        const unidade = {
+                            nome: limparTexto(colunas[0]),
+                            tipoLogradouro: limparTexto(colunas[2]),
+                            logradouro: limparTexto(colunas[3]),
+                            numero: limparTexto(colunas[4]),
+                            complemento: limparTexto(colunas[5]),
+                            bairro: limparTexto(colunas[6]),
+                            cidade: limparTexto(colunas[7]),
+                            cep: limparTexto(colunas[8]),
+                            email: limparTexto(colunas[9]),
+                            telefone: limparTexto(colunas[11])
+                        };
+                        unidadesDaPolicia.push(unidade);
+                    }
+                }
+                prepararListaCidades();
+            })
+            .catch(erro => {
+                console.error('Erro ao carregar o arquivo CSV:', erro);
+                const input = document.getElementById('cidade-input');
+                input.disabled = true;
+                input.placeholder = 'Erro ao carregar os dados. Tente recarregar a página.';
+            });
+
+        // Prepara um Array simples só com o nome dos municípios únicos
+        function prepararListaCidades() {
+            const conjuntoCidades = new Set();
+            unidadesDaPolicia.forEach(u => {
+                if (u.cidade && u.cidade !== '-' && u.cidade !== '0') {
+                    conjuntoCidades.add(u.cidade.toUpperCase());
+                }
+            });
+            listaTodasCidades = Array.from(conjuntoCidades).sort();
+        }
+
+        const inputCidade = document.getElementById('cidade-input');
+        const listaAutocomplete = document.getElementById('cidades-autocomplete');
+        const selectBairro = document.getElementById('bairro-select');
+        const selectUnidade = document.getElementById('unidade-select');
+        const cardResultado = document.getElementById('resultado');
+
+        // Função principal que carrega bairros e unidades baseado no município escolhido
+        function processarMunicipioSelecionado(cidadeEscolhida) {
+            unidadesDoMunicipioAtual = unidadesDaPolicia.filter(u => u.cidade.toUpperCase() === cidadeEscolhida);
+            cardResultado.style.display = 'none'; 
+            
+            if (unidadesDoMunicipioAtual.length > 0) {
+                // Habilita e preenche os bairros
+                selectBairro.disabled = false;
+                selectBairro.innerHTML = '<option value="">Todos os bairros...</option>';
+                
+                const conjuntoBairros = new Set();
+                unidadesDoMunicipioAtual.forEach(u => {
+                    if (u.bairro && u.bairro !== '-' && u.bairro !== '0') {
+                        conjuntoBairros.add(u.bairro.toUpperCase());
+                    }
+                });
+                
+                Array.from(conjuntoBairros).sort().forEach(bairro => {
+                    const option = document.createElement('option');
+                    option.value = bairro;
+                    option.textContent = bairro;
+                    selectBairro.appendChild(option);
+                });
+
+                atualizarSelectUnidades(unidadesDoMunicipioAtual);
+            } else {
+                desabilitarFiltrosPendentes();
+            }
+        }
+
+        function desabilitarFiltrosPendentes() {
+            selectBairro.disabled = true;
+            selectBairro.innerHTML = '<option value="">Aguardando seleção do município...</option>';
+            selectUnidade.disabled = true;
+            selectUnidade.innerHTML = '<option value="">Aguardando seleção...</option>';
+            cardResultado.style.display = 'none';
+        }
+
+        function atualizarSelectUnidades(lista) {
+            selectUnidade.innerHTML = '<option value="">Selecione uma unidade...</option>';
+            if (lista.length > 0) {
+                selectUnidade.disabled = false;
+                lista.forEach(u => {
+                    const option = document.createElement('option');
+                    option.value = u.nome;
+                    option.textContent = u.nome;
+                    selectUnidade.appendChild(option);
+                });
+            } else {
+                selectUnidade.disabled = true;
+                selectUnidade.innerHTML = '<option value="">Nenhuma unidade encontrada...</option>';
+            }
+        }
+
+        // EVENTO: Quando o usuário digita no campo de Município
+        inputCidade.addEventListener('input', function() {
+            const termoBuscado = this.value.toUpperCase();
+            listaAutocomplete.innerHTML = ''; // Limpa a lista atual
+
+            if (termoBuscado.length === 0) {
+                listaAutocomplete.style.display = 'none';
+                desabilitarFiltrosPendentes();
+                return;
+            }
+
+            // Filtra municípios que contêm o texto digitado
+            const cidadesFiltradas = listaTodasCidades.filter(cidade => cidade.includes(termoBuscado));
+
+            if (cidadesFiltradas.length > 0) {
+                cidadesFiltradas.forEach(cidade => {
+                    const li = document.createElement('li');
+                    li.textContent = cidade;
+                    
+                    // Quando o usuário clicar em uma das opções da lista:
+                    li.addEventListener('click', function() {
+                        inputCidade.value = cidade; // Preenche o input
+                        listaAutocomplete.style.display = 'none'; // Esconde a lista
+                        processarMunicipioSelecionado(cidade); // Libera os próximos menus
+                    });
+                    
+                    listaAutocomplete.appendChild(li);
+                });
+                listaAutocomplete.style.display = 'block'; // Mostra a lista
+            } else {
+                listaAutocomplete.style.display = 'none';
+            }
+
+            // Se o usuário digitou o nome EXATO sem clicar, já processa
+            if (listaTodasCidades.includes(termoBuscado)) {
+                processarMunicipioSelecionado(termoBuscado);
+            } else {
+                desabilitarFiltrosPendentes();
+            }
+        });
+
+        // Ocultar a lista de autocomplete se o usuário clicar fora dela
+        document.addEventListener('click', function(evento) {
+            if (evento.target !== inputCidade && evento.target !== listaAutocomplete) {
+                listaAutocomplete.style.display = 'none';
+            }
+        });
+
+        // EVENTO: Quando seleciona um Bairro específico
+        selectBairro.addEventListener('change', function() {
+            const buscaBairro = this.value.toUpperCase();
+            cardResultado.style.display = 'none'; 
+            
+            if (buscaBairro === "") {
+                atualizarSelectUnidades(unidadesDoMunicipioAtual);
+            } else {
+                const unidadesFiltradasPorBairro = unidadesDoMunicipioAtual.filter(u => u.bairro.toUpperCase() === buscaBairro);
+                atualizarSelectUnidades(unidadesFiltradasPorBairro);
+            }
+        });
+
+        // EVENTO: Quando seleciona a Unidade
+        selectUnidade.addEventListener('change', function() {
+            const nomeEscolhido = this.value;
+            const unidadeAtiva = unidadesDoMunicipioAtual.find(u => u.nome === nomeEscolhido);
+            
+            if (unidadeAtiva) {
+                document.getElementById('res-nome').textContent = unidadeAtiva.nome;
+                
+                let complementoFormatado = unidadeAtiva.complemento ? ' - ' + unidadeAtiva.complemento : '';
+                let enderecoStr = `${unidadeAtiva.tipoLogradouro} ${unidadeAtiva.logradouro}, nº ${unidadeAtiva.numero}${complementoFormatado}`;
+                
+                document.getElementById('res-endereco').textContent = enderecoStr;
+                document.getElementById('res-bairro').textContent = unidadeAtiva.bairro;
+                document.getElementById('res-cidade').textContent = unidadeAtiva.cidade;
+                document.getElementById('res-cep').textContent = unidadeAtiva.cep;
+                
+                document.getElementById('res-telefone').textContent = unidadeAtiva.telefone || 'Não informado';
+                document.getElementById('res-email').textContent = unidadeAtiva.email || 'Não informado';
+                
+                cardResultado.style.display = 'block';
+            } else {
+                cardResultado.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

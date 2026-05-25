@@ -1,0 +1,200 @@
+/* ===== AJUSTE DA LOGO E CABEÇALHO ===== */
+.logo-img {
+  height: 45px; /* Reduzido de 100px para 60px para um visual mais limpo */
+  width: auto;
+  transition: transform 0.3s ease;
+}
+
+.logo-img:hover {
+  transform: scale(1.05); /* Efeito sutil ao passar o mouse */
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 24px; /* Redução do padding vertical de 16px para 12px */
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-text h1 {
+  font-size: 18px; /* Reduzido de 22px para harmonizar com a logo menor */
+  color: #000000;
+  margin-bottom: 2px;
+}
+
+.header-text p {
+  font-size: 13px; /* Ajuste fino na fonte do subtítulo */
+  color: #4b5563; /* Tom levemente mais suave que o preto puro */
+  line-height: 1.2;
+}
+/* ===== VARIÁVEIS MODERNIZADAS ===== */
+:root {
+  --primary: #1e40af; /* Azul mais sóbrio e militar */
+  --primary-hover: #1d4ed8;
+  --secondary: #64748b;
+  --success: #10b981;
+  --danger: #ef4444;
+  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  --card-bg: #ffffff;
+  --text-main: #1e293b;
+  --text-muted: #475569;
+  --border-radius: 12px;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* ===== RESET E BASE ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ===== CABEÇALHO ===== */
+.page-header {
+  background: white;
+  padding: 2rem 0;
+  box-shadow: var(--shadow);
+  border-bottom: 4px solid var(--primary);
+}
+
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.header-text h1 {
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.header-text p {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* ===== MENU PILLS (NAVEGAÇÃO FLUTUANTE) ===== */
+.menu-pills {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  padding: 1rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.menu-pills ul {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  list-style: none;
+}
+
+.menu-pills a {
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-pills a:hover {
+  background: #f1f5f9;
+  color: var(--primary);
+}
+
+.menu-pills a.active {
+  background: var(--primary);
+  color: white;
+}
+
+/* ===== CONTEÚDO EM CARDS ===== */
+main {
+  max-width: 900px; /* Reduzido para melhorar a leitura */
+  margin: 2rem auto;
+  padding: 0 24px 4rem 24px;
+}
+
+section {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+  border: 1px solid #f1f5f9;
+  transition: transform 0.2s ease;
+}
+
+section:hover {
+  transform: translateY(-2px);
+}
+
+section h2 {
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary);
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Estilização para Seção de Erros */
+#erros {
+  border-left: 6px solid var(--danger);
+}
+
+#erros h2 { color: var(--danger); }
+
+/* Estilização para Procedimentos */
+#procedimentos {
+  border-left: 6px solid var(--success);
+}
+
+/* Listas e Itens */
+ul {
+  list-style-position: inside;
+}
+
+li {
+  padding: 8px 0;
+  border-bottom: 1px solid #f8fafc;
+}
+
+li:last-child { border-bottom: none; }
+
+strong {
+  color: var(--primary);
+  background: #eff6ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: #1e293b;
+  color: #f1f5f9;
+  text-align: center;
+  padding: 3rem 1rem;
+  margin-top: 4rem;
+}

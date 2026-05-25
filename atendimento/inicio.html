@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Central de Atendimento - SISP</title>
+
+  <!-- Fontes Institucionais -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Source+Sans+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="css\styles.css" />
+</head>
+<body>
+  <div class="page">
+
+    <!-- TOPBAR -->
+   <header class="topbar">
+  <div class="topbar-inner">
+
+    <!-- Logo SISP -->
+   <div class="logo-wrapper">
+  <img src="img\sisp-logo.png" alt="Logo SISP" class="logo-sisp-img">
+</div>
+
+    <!-- Relógio -->
+    <div class="clock-wrapper">
+      <div class="clock-time">00:00:00</div>
+      <div class="clock-date">---</div>
+    </div>
+
+  </div>
+</header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main">
+      <div class="main-inner">
+
+        <!-- Título -->
+        <section class="page-header">
+          <h1>CIAD | Centro Integrado de Atendimento e Despacho</h1>
+          <p>Selecione um sistema para iniciar suas operações.</p>
+        </section>
+
+        <!-- FILTROS -->
+        <section class="filters-bar">
+          <div class="filters-pills">
+            <button class="pill pill-active" type="button" data-filter="todos">Todos</button>
+            <button class="pill" type="button" data-filter="sistemas">Sistemas Operacionais</button>
+            <button class="pill" type="button" data-filter="mapas">Mapas e Localização</button>
+            <button class="pill" type="button" data-filter="roteiros">Roteiros e Protocolos</button>
+            <button class="pill" type="button" data-filter="administrativo">Administrativo</button>
+            <button class="pill" type="button" data-filter="contingencia">Contingência</button>
+          </div>
+        </section>
+
+        <!-- GRID DE CARDS -->
+        <section class="cards-grid">
+
+          <!-- Linha 1 -->
+          <a href="https://emergencia.ca.mg.gov.br/agent" target="_blank" class="card" data-category="sistemas">
+            <div class="card-icon"><span>⏰</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>Emergência MG</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Sistema de Despacho e Emergências</p>
+            </div>
+          </a>
+
+          <a href="https://siloc.seguranca.mg.gov.br/login" target="_blank" class="card" data-category="sistemas">
+            <div class="card-icon"><span>📡</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>SILOC MG</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Sistema de Localização e Ocorrências</p>
+            </div>
+          </a>
+
+          <a href="https://geosite.policiamilitar.mg.gov.br/mapacad/main.jsp" class="card" data-category="mapas">
+            <div class="card-icon"><span>🗺️</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>Mapa CAD</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Georreferenciamento de viaturas</p>
+            </div>
+          </a>
+
+          <a href="https://www.google.com/maps" target="_blank" class="card" data-category="mapas">
+            <div class="card-icon"><span>📍</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>Google Maps</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Consulta de endereços e rotas</p>
+            </div>
+          </a>
+
+          <!-- Linha 2 -->
+          <a href="pages\POPMENU.html" class="card" data-category="roteiros">
+            <div class="card-icon"><span>📘</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>POP de Atendimento</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Guias e procedimentos padrão</p>
+            </div>
+          </a>
+
+
+           <a href="pages\auxilio\menuaux.html" class="card" data-category="Modulos de Auxilio">
+            <div class="card-icon"><span>▶️</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>Modulo de Auxilio</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Modulo de Auxilio ao atendimento </p>
+            </div>
+          </a>
+
+
+        <a href="../cadoffline/pages/atendimento/menuatd.php" class="card" data-category="contingencia">
+            <div class="card-icon"><span>📝</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>CAD OFFLINE</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Formulário utilizado em caso de queda do CAD/REDS</p>
+            </div>
+          </a>
+
+          <a href="http://urapmmg.ca.intra:8080/login" class="card" data-category="contingencia">
+            <div class="card-icon"><span>👥</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>TabAgent</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>TabAgent</p>
+            </div>
+          </a>
+
+          <!-- Linha 3 -->
+        
+              <a href="https://rpe.mgs.srv.br/" class="card" data-category="administrativo">
+            <div class="card-icon"><span>⌚</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>Ponto MGS</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Ponto MGS</p>
+            </div>
+          </a>
+          
+
+            <a href="https://rpe.mgs.srv.br/" class="card" data-category="administrativo">
+            <div class="card-icon"><span>📋</span></div>
+            <div class="card-body">
+              <div class="card-header">
+                <h3>Escala</h3>
+                <span class="card-ext">↗</span>
+              </div>
+              <p>Escala</p>
+            </div>
+          </a>
+          
+        </section>
+
+      </div>
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="footer">
+      © 2026 SISP MG. Todos os direitos reservados.
+    </footer>
+
+  </div>
+
+  <script src="../shared.js"></script>
+</body>
+</html>

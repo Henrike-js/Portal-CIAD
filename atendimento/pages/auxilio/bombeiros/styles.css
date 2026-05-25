@@ -1,0 +1,330 @@
+/* ===== Variáveis Globais ===== */
+:root {
+  --primary: #2f5dff;
+  --primary-hover: #1e3a8a;
+  --primary-light: #e6ecff;
+  --success: #10b981;
+  --success-hover: #059669;
+  --danger: #ef4444;
+  --bg: #f5f7fb;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --card-bg: #ffffff;
+  --border-soft: #e5e7eb;
+  --radius: 12px;
+  --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Reset e Base ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Source Sans Pro", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* ===== Layout Principal ===== */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  background: #fff;
+  padding: 1rem 2rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-inner {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.8rem;
+}
+
+/* ===== Container Dinâmico (Grid) ===== */
+.roteiro-container {
+  display: block; /* Inicialmente centralizado sem o bloco */
+}
+
+.roteiro-container.ativo {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 2rem;
+}
+
+/* ===== Cards de Menu ===== */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+  border: 2px solid transparent;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+}
+
+.card h3 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.1rem;
+}
+
+/* ===== Perguntas Interativas ===== */
+.interactive-q {
+  background: #fff;
+  padding: 1.2rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-soft);
+}
+
+.q-text {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+.q-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-sn, .btn-ok {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-sn.sim { background: #dcfce7; color: #166534; }
+.btn-sn.nao { background: #fee2e2; color: #991b1b; }
+.btn-ok { background: var(--primary); color: #fff; }
+
+.q-input {
+  flex: 1;
+  padding: 0.6rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+}
+
+/* ===== Bloco de Notas (CAD) ===== */
+.roteiro-notepad {
+  display: none; /* Escondido por padrão */
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  height: calc(100vh - 150px);
+  position: sticky;
+  top: 100px;
+  flex-direction: column;
+}
+
+.roteiro-container.ativo .roteiro-notepad {
+  display: flex;
+}
+
+.roteiro-notepad textarea {
+  flex: 1;
+  width: 100%;
+  resize: none;
+  padding: 1rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  font-family: monospace;
+  background: #fcfcfc;
+}
+
+/* ===== Botões de Navegação ===== */
+.pill {
+  padding: 0.5rem 1rem;
+  background: #eee;
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-proximo {
+  width: 100%;
+  background: var(--success);
+  color: #fff;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-top: 1.5rem;
+  cursor: pointer;
+}
+
+.btn-proximo:hover { background: var(--success-hover); }
+
+/* ===== Fase de Instruções (Pós-Triagem) ===== */
+.fase-instrucao {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inst-section {
+  padding: 1.5rem;
+  border-radius: 10px;
+  border-left: 5px solid #ccc;
+}
+
+.inst-section h4 { margin-bottom: 0.8rem; font-family: "Montserrat"; }
+.inst-section ul { list-style: none; }
+.inst-section li { margin-bottom: 0.5rem; display: flex; align-items: center; }
+.inst-section li::before { content: "•"; margin-right: 10px; font-weight: bold; }
+
+.inst-section.cad { background: #eff6ff; border-color: #3b82f6; color: #1e40af; }
+.inst-section.supervisor { background: #fff1f2; border-color: #ef4444; color: #991b1b; }
+.inst-section.orientacoes { background: #f0fdf4; border-color: #22c55e; color: #166534; }
+
+.btn-reset {
+  padding: 0.8rem;
+  background: #6b7280;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ===== Responsividade ===== */
+@media (max-width: 900px) {
+  .roteiro-container.ativo {
+    grid-template-columns: 1fr;
+  }
+  .roteiro-notepad {
+    position: static;
+    height: 300px;
+  }
+}
+
+.step-navigation {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.btn-step {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 6px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-next {
+  background-color: #0ea5e9; /* Azul da imagem */
+  color: white;
+}
+
+.btn-next:hover {
+  background-color: #0284c7;
+  transform: translateY(-1px);
+}
+
+.btn-back {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.btn-back:hover {
+  background-color: #e2e8f0;
+}
+
+/* Títulos de Passo */
+.titulo-passo {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 5px;
+}
+
+/* Itens de Decisão (Cores do Print) */
+.decisao-item {
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+}
+
+.lista-instrucoes {
+  list-style: disc;
+  margin-left: 25px;
+  margin-top: 5px;
+  color: #374151;
+}
+
+/* Bloco de Fala Azul (Igual à Abordagem Inicial) */
+.bloco-fala-azul {
+  background-color: #f0f4ff;
+  border-left: 5px solid #2f5dff;
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.bloco-fala-azul p {
+  font-style: italic;
+  color: #1e3a8a;
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.orientacoes-texto {
+  font-size: 0.9rem;
+  color: #4b5563;
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "GRUPO": "",
+    "NATUREZA": "",
+    "TÍTULO": "",
+    "DESCRIÇÃO": "",
+    "AÇÕES": "",
+    "ATENDIMENTO LOCAL PELA PC": "",
+    "LOCAL DE ENCERRAMENTO": ""
+  },
+  {
+    "GRUPO": "A",
+    "NATUREZA": "A 17.004",
+    "TÍTULO": "REMOÇÃO DE CADÁVER EM HOSPITAIS OU SIMILARES",
+    "DESCRIÇÃO": "Enquadra-se, nesta natureza, o empenho do rabecão para remoção de cadáver em hospitais ou similares.",
+    "AÇÕES": "a) Deverá gerar a CHAMADA; b) Informações importantes: Nome e endereço da Unidade de saúde, nome e CRM do médico que constatou o óbito, nome do servidor que efetuou a solicitação, motivo da internação, (acidente de transito, perfuração por arma branca, disparo de arma de fogo, queda de própria altura, etc.), data de entrada na unidade e local de onde a vítima foi socorrida. ",
+    "ATENDIMENTO LOCAL PELA PC": "a) Acionar rabecão;b) O agente policial, responsável pelo rabecão, comunicará ao Centro de Operações / Unidade Policial Civil, que empenhou, o início e término dos trabalhos.",
+    "LOCAL DE ENCERRAMENTO": ""
+  },
+  {
+    "GRUPO": "A",
+    "NATUREZA": "A 17.005",
+    "TÍTULO": "REMOÇÃO DE CADÁVER EM LOCAL DE CRIME OU ACIDENTE",
+    "DESCRIÇÃO": "Enquadra-se, nesta natureza, o empenho do rabecão para remoção de cadáver em local de crime ou acidente.",
+    "AÇÕES": "a) Deverá gerar a CHAMADA; b) Informações importantes: Endereço do fato, identificação do solicitante (nome e telefone de contato), identificação da vítima (nome, idade aparente), Orientar a ligar para SAMU para a constatação do óbito, perguntar em qual local da residência a vítima está; possui lesões e/ou sangramentos, se sim, quais e em quais locais do corpo, se há sinais de violência e ou medicamentos próximos; possui histórico médico, alcoolismo, dependente químico. ",
+    "ATENDIMENTO LOCAL PELA PC": "a) Acionar rabecão;\nb) O agente policial, responsável pelo rabecão, comunicará ao Centro de Operações / Unidade Policial Civil, que empenhou, o início e término dos trabalhos.",
+    "LOCAL DE ENCERRAMENTO": ""
+  }
+]

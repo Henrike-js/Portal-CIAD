@@ -1,0 +1,39 @@
+CREATE TABLE registro_chamadas (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    matricula VARCHAR(20) NOT NULL,
+    nome_teleatendente VARCHAR(120) NOT NULL,
+
+    data_atendimento DATE NOT NULL,
+    hora_atendimento TIME NOT NULL,
+
+    destino_servico VARCHAR(50) NOT NULL,
+
+    logradouro_chamada VARCHAR(255),
+    numero_chamada VARCHAR(20),
+    complemento_chamada VARCHAR(100),
+    bairro_chamada VARCHAR(120),
+    municipio_chamada VARCHAR(120),
+    telefone_chamada VARCHAR(20),
+
+    nome_solicitante VARCHAR(120),
+    endereco_solicitante VARCHAR(255),
+    numero_solicitante VARCHAR(20),
+    complemento_solicitante VARCHAR(100),
+    bairro_solicitante VARCHAR(120),
+    municipio_solicitante VARCHAR(120),
+    telefone_solicitante VARCHAR(20),
+
+    historico TEXT,
+    codigo_natureza VARCHAR(50),
+
+    data_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_data (data_atendimento),
+    INDEX idx_municipio (municipio_chamada),
+    INDEX idx_codigo (codigo_natureza),
+    INDEX idx_matricula (matricula)
+
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
