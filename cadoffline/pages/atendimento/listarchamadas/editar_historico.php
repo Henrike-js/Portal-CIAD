@@ -221,7 +221,9 @@ $registro = $result->fetch_assoc();
 <body>
 
     <header class="header-container">
-        <img src="../../../../img/cadoffline/logo.png" alt="Logo do Sistema" class="logo-img">
+        <a href="lista_chamadas.php" style="text-decoration:none;">
+          <img src="../../../../img/cadoffline/logo.png" alt="Logo do Sistema" class="logo-img">
+        </a>
     </header>
 
     <div class="container">

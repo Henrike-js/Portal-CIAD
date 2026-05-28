@@ -102,7 +102,9 @@
 
 <div class="dashboard-container">
     <div class="header">
-        <img src="../../../img/cadoffline/logo.png" alt="SISP Logo" onerror="this.style.display='none'">
+        <a href="../../index.php" style="text-decoration:none;">
+          <img src="../../../img/cadoffline/logo.png" alt="SISP Logo" onerror="this.style.display='none'">
+        </a>
         <h1>Painel de Gestão SISP</h1>
         <p>Módulo de Supervisão e Controle de Despacho</p>
     </div>

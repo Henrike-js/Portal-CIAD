@@ -133,7 +133,9 @@ body{
 
 <header class="topbar">
     <div class="topbar-inner">
-        <img src="../../../../img/cadoffline/sisp-logo.png" class="logo-sisp-img" alt="SISP">
+        <a href="relatorio.php" style="text-decoration:none;">
+          <img src="../../../../img/cadoffline/sisp-logo.png" class="logo-sisp-img" alt="SISP">
+        </a>
     </div>
 </header>
 
