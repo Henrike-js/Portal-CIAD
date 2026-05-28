@@ -293,7 +293,7 @@ $iconHome = '<svg width="36" height="36" viewBox="0 0 24 24" fill="#FCD34D" stro
     <div class="folders-pane">
 
         <a href="../menudes.php">
-            <img src="img/sisp-logo.png" alt="SISP Logo" class="sisp-logo" style="cursor: pointer;">
+            <img src="../../../../img/cadoffline/sisp-logo.png" alt="SISP Logo" class="sisp-logo" style="cursor: pointer;">
         </a>
 
         <!-- BARRA DE FILTRO (abaixo do banner) -->

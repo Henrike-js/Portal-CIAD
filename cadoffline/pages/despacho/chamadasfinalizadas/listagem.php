@@ -156,7 +156,7 @@ $busca = isset($_GET['q']) ? trim($_GET['q']) : "";
 <div class="topbar">
     <a href="../menudes.php" style="text-decoration: none; color: inherit; display: block;">
         <div class="header">
-            <img src="logo.png" alt="SISP Logo">
+            <img src="../../../../img/cadoffline/logo.png" alt="SISP Logo">
             <div class="title-area">
                 <h1>Chamadas Registradas</h1>
                 <p>Sistema Integrado de Segurança e Monitoramento</p>

@@ -83,7 +83,7 @@
 
 <div class="dashboard-container">
     <div class="header">
-        <img src="img/sisp-logo.png" alt="SISP Logo" onerror="this.style.display='none'">
+        <img src="../../../img/cadoffline/sisp-logo.png" alt="SISP Logo" onerror="this.style.display='none'">
         <h1>Painel de Controle SISP</h1>
         <p>Sistema Integrado de Segurança Pública - Gestão de Atendimentos</p>
     </div>

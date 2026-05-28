@@ -221,7 +221,7 @@ $registro = $result->fetch_assoc();
 <body>
 
     <header class="header-container">
-        <img src="logo.png" alt="Logo do Sistema" class="logo-img">
+        <img src="../../../../img/cadoffline/logo.png" alt="Logo do Sistema" class="logo-img">
     </header>
 
     <div class="container">

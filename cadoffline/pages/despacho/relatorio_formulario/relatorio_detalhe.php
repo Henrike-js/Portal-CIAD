@@ -133,7 +133,7 @@ body{
 
 <header class="topbar">
     <div class="topbar-inner">
-        <img src="img/sisp-logo.png" class="logo-sisp-img" alt="SISP">
+        <img src="../../../../img/cadoffline/sisp-logo.png" class="logo-sisp-img" alt="SISP">
     </div>
 </header>
 

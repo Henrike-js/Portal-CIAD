@@ -174,7 +174,7 @@ td{
  <div class="topbar">
   <div class="topbar-inner">
     <a href="..\menuatd.php">
-      <img src="logo.png" class="logo-sisp-img">
+      <img src="../../../../img/cadoffline/logo.png" class="logo-sisp-img">
     </a>
     <div></div>
   </div>

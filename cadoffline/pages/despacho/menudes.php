@@ -102,7 +102,7 @@
 
 <div class="dashboard-container">
     <div class="header">
-        <img src="img/logo.png" alt="SISP Logo" onerror="this.style.display='none'">
+        <img src="../../../img/cadoffline/logo.png" alt="SISP Logo" onerror="this.style.display='none'">
         <h1>Painel de Gestão SISP</h1>
         <p>Módulo de Supervisão e Controle de Despacho</p>
     </div>
